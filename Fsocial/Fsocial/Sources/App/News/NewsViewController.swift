@@ -29,7 +29,9 @@ class NewsViewController: BaseViewController<NewsViewModel> {
     }
     
     func setupContentView() {
-        let swiftUIView = NewsContentView()
+        let swiftUIView = NewsContentView() {
+            self.viewModel.router.trigger(.questionView)
+        }
         let hosting = UIHostingController(rootView: swiftUIView)
         self.addChild(hosting)
         self.view.addSubview(hosting.view)

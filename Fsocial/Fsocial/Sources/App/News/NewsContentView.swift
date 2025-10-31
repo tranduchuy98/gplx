@@ -10,6 +10,8 @@ final class NewsHeaderViewModel: ObservableObject {
 struct NewsContentView: View {
     @StateObject private var vm = NewsHeaderViewModel()
 
+    let onClick: () -> Void
+
     // Tinh chỉnh
     private let headerHeight: CGFloat = 220
     private let hideThreshold: CGFloat = 50   // cuộn bao nhiêu thì ẩn hẳn
@@ -20,6 +22,9 @@ struct NewsContentView: View {
                 LazyVStack(spacing: 20, pinnedViews: []) {
                     // Header có GeometryReader đo offset .global (giống code bạn đưa)
                     scrollHeaderView
+                        .onTapGesture {
+                            onClick()
+                        }
 
                     // ----- Demo content -----
                     Group {
