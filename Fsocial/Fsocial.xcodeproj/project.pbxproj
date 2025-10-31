@@ -433,6 +433,7 @@
 		3EE4B0162C6C89840006B28C /* BaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE4B0152C6C89840006B28C /* BaseViewModel.swift */; };
 		3EE4B0192C6C8AA90006B28C /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EE4B0182C6C8AA90006B28C /* UIViewController+Extensions.swift */; };
 		3EE4B01E2C6C8C230006B28C /* PureLayout in Frameworks */ = {isa = PBXBuildFile; productRef = 3EE4B01D2C6C8C230006B28C /* PureLayout */; };
+		9A2B6CCD2EB5101B0022342F /* ButtonExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2B6CCC2EB5101B0022342F /* ButtonExt.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -872,6 +873,7 @@
 		3EE4B0152C6C89840006B28C /* BaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewModel.swift; sourceTree = "<group>"; };
 		3EE4B0182C6C8AA90006B28C /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		43424945A244DFD1D2B8E7BA /* Pods_Fsocial.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Fsocial.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9A2B6CCC2EB5101B0022342F /* ButtonExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonExt.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1572,6 +1574,7 @@
 			children = (
 				3EE4B0182C6C8AA90006B28C /* UIViewController+Extensions.swift */,
 				3E07B5382C6C952B006D4EEC /* Observable+Extenstions.swift */,
+				9A2B6CCC2EB5101B0022342F /* ButtonExt.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2051,6 +2054,7 @@
 				3EE4B0192C6C8AA90006B28C /* UIViewController+Extensions.swift in Sources */,
 				3E37BDA92C6C538400F02884 /* UITabBarController+Transition.swift in Sources */,
 				3E07B5372C6C9235006D4EEC /* StyleKit.swift in Sources */,
+				9A2B6CCD2EB5101B0022342F /* ButtonExt.swift in Sources */,
 				3E37BDBE2C6C53B900F02884 /* Animation+Modal.swift in Sources */,
 				3E37BD8E2C6C538400F02884 /* InteractiveTransitionAnimation.swift in Sources */,
 				3E37BDAB2C6C538400F02884 /* UIViewController+Transition.swift in Sources */,

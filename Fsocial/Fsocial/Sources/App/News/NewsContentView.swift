@@ -9,12 +9,22 @@ final class NewsHeaderViewModel: ObservableObject {
 
 struct NewsContentView: View {
     @StateObject private var vm = NewsHeaderViewModel()
+    
+    @State private var searchText: String = ""
 
     let onClick: () -> Void
 
     // Tinh chỉnh
     private let headerHeight: CGFloat = 220
     private let hideThreshold: CGFloat = 50   // cuộn bao nhiêu thì ẩn hẳn
+    
+    private var filtered: [LicenseCategory] {
+          let q = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+          guard !q.isEmpty else { return LicenseCategory.allCases }
+          return LicenseCategory.allCases.filter {
+              $0.rawValue.localizedCaseInsensitiveContains(q)
+          }
+      }
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -25,14 +35,16 @@ struct NewsContentView: View {
                         .onTapGesture {
                             onClick()
                         }
-
-                    // ----- Demo content -----
+                    MiniNavBar(text: $searchText, visible: vm.progress < 0.92)
+                        .padding(.horizontal, 12)
+                        .padding(.top, 12)
                     Group {
-                        sectionSubjects
+                        if searchText.isEmpty {
+                            ExamCategoryGridView { print($0) }
+                        }
                         sectionSchedule
                     }
                     .padding(.horizontal, 16)
-
                     Spacer(minLength: 40)
                 }
             }
@@ -45,13 +57,16 @@ struct NewsContentView: View {
                 }
             }
 
-            // Mini bar xuất hiện khi header gần ẩn hết
-            MiniNavBar(visible: vm.progress > 0.92)
+            MiniNavBar(text: $searchText, visible: vm.progress > 0.92)
                 .padding(.top, safeTopInset() + 6)
                 .padding(.horizontal, 12)
                 .allowsHitTesting(vm.progress > 0.92)
         }
+        .background(Color(.systemGroupedBackground))
         .ignoresSafeArea(edges: .top)
+        .onTapGesture {
+            UIApplication.shared.windows.first{$0.isKeyWindow }?.endEditing(true)
+        }
     }
 
     // MARK: - Header có hiệu ứng co/ẩn
@@ -93,30 +108,27 @@ struct NewsContentView: View {
         .frame(height: headerHeight) // chiều cao nền tảng ban đầu
     }
 
-    // MARK: - Sections demo
-    private var sectionSubjects: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Subjects").font(.system(size: 24, weight: .bold))
-            Text("Recommendations for you").font(.subheadline).foregroundColor(.secondary)
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 16) {
-                    SubjectCard(title: "Mathematics", icon: "function", colors: [.orange, .pink])
-                    SubjectCard(title: "Geography", icon: "globe.asia.australia.fill", colors: [.blue, .purple])
-                    SubjectCard(title: "Physics", icon: "atom", colors: [.indigo, .cyan])
-                }
-                .padding(.vertical, 4)
-            }
-        }
-    }
-
     private var sectionSchedule: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("Your Schedule").font(.system(size: 24, weight: .bold))
+            Text("Đề thi ôn tập").font(.system(size: 24, weight: .bold))
+            Text("Danh sách đề thi các hạng giấy phép lái xe").font(.subheadline).foregroundColor(.secondary)
             VStack(spacing: 14) {
-                ScheduleRow(title: "Biology", subtitle: "Chapter 5 · Animal Kingdom", color: .green)
-                ScheduleRow(title: "Chemistry", subtitle: "Organic basics", color: .teal)
-                ScheduleRow(title: "History", subtitle: "Renaissance overview", color: .brown)
+                ForEach(filtered, id: \.self) { title in
+                    Button {
+                        print(title.rawValue)
+                    } label: {
+                        ScheduleRow(title: title.rawValue, subtitle: title.description)
+                    }
+                    .buttonStyle(ScaleButtonStyle())
+                }
+                if filtered.isEmpty {
+                    HStack {
+                        Text("Không tìm thấy kết quả")
+                            .foregroundColor(.secondary)
+                            .padding(.top, 8)
+                        Spacer()
+                    }
+                }
             }
         }
     }
@@ -162,7 +174,7 @@ struct NewsHeaderView: View {
                     Text("ONLINE miễn phí")
                         .font(.system(size: 18, weight: .bold))
                     +
-                    Text(" phí với bộ đề ")
+                    Text(" với bộ đề ")
                         .font(.system(size: 15, weight: .medium))
                     +
                     Text("600")
@@ -200,15 +212,41 @@ struct NewsHeaderView: View {
 
 // MARK: - Mini Nav
 struct MiniNavBar: View {
+    @Binding var text: String
     var visible: Bool
     var body: some View {
         HStack {
-            Text("Discover").font(.headline).foregroundColor(.primary)
-            Spacer()
-            Image(systemName: "magnifyingglass").foregroundColor(.primary)
+            HStack(spacing: 8) {
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(Color(.primary))
+                TextField("Tìm kiếm hạng bằng", text: $text)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled(true)
+                    .font(.regualar(size: 16))
+                    .foregroundColor(.primary)
+                    .multilineTextAlignment(.leading)
+                Spacer()
+                if !text.isEmpty {
+                    Button {
+                        text = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(Color(.primary))
+                    }
+                }
+            }
+            .padding(10)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+            Button {
+                UIApplication.shared.windows.first{$0.isKeyWindow }?.endEditing(true)
+            } label: {
+                Text("Xong")
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundColor(Color(.primary))
+            }
         }
-        .padding(10)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
         .opacity(visible ? 1 : 0)
         .animation(.easeInOut(duration: 0.18), value: visible)
     }
@@ -216,40 +254,97 @@ struct MiniNavBar: View {
 
 // MARK: - Demo cells
 struct SubjectCard: View {
-    let title: String; let icon: String; let colors: [Color]
+    let title: String
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Image(systemName: icon)
-                .font(.system(size: 20, weight: .bold))
-                .padding(8)
-                .background(.white.opacity(0.25), in: RoundedRectangle(cornerRadius: 10))
-            Text(title).font(.headline).foregroundColor(.white)
+            Text(title).font(.headline).foregroundColor(.black)
         }
         .padding(16)
         .frame(width: 180, height: 110)
-        .background(LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing))
+        .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 18))
-        .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
     }
 }
 
 struct ScheduleRow: View {
-    let title: String; let subtitle: String; let color: Color
+    let title: String; let subtitle: String
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             RoundedRectangle(cornerRadius: 10)
-                .fill(color.opacity(0.9))
+                .fill(LinearGradient(colors: [Color.green, Color.teal],
+                                       startPoint: .topLeading, endPoint: .bottomTrailing))
                 .frame(width: 52, height: 52)
-                .overlay(Image(systemName: "book.fill").foregroundColor(.white))
+                .overlay(Text(title).font(.headline).foregroundColor(.white))
             VStack(alignment: .leading) {
-                Text(title).font(.headline)
-                Text(subtitle).font(.subheadline).foregroundColor(.secondary)
+                Text(subtitle)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.black)
             }
             Spacer()
-            Image(systemName: "ellipsis").rotationEffect(.degrees(90)).foregroundColor(.secondary)
         }
         .padding(14)
         .background(.background, in: RoundedRectangle(cornerRadius: 16))
         .shadow(color: .black.opacity(0.05), radius: 6, x: 0, y: 3)
+    }
+}
+
+struct ExamCategoryGridView: View {
+    let items: [ExamCategory] = ExamCategory.allCases
+    var onSelect: (ExamCategory) -> Void = { _ in }
+    
+    private let columns: [GridItem] = [
+        GridItem(.flexible(), spacing: 12),
+        GridItem(.flexible(), spacing: 12)
+    ]
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text("Ôn tập theo chủ đề").font(.system(size: 24, weight: .bold))
+            LazyVGrid(columns: columns, spacing: 12) {
+                ForEach(items) { item in
+                    Button {
+                        onSelect(item)
+                    } label: {
+                        CategoryCard(item: item)
+                            .accessibilityElement(children: .ignore)
+                            .accessibilityLabel(Text(item.rawValue))
+                            .accessibilityAddTraits(.isButton)
+                    }
+                    .buttonStyle(ScaleButtonStyle())
+                }
+            }
+        }
+    }
+}
+
+private struct CategoryCard: View {
+    let item: ExamCategory
+    var body: some View {
+        HStack(alignment: .center, spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(item.tint.opacity(0.15))
+                    .frame(width: 30, height: 30)
+                Image(systemName: item.icon)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(item.tint)
+            }
+            Text(item.rawValue)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundColor(Color.primary)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(Color(.secondarySystemBackground))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(Color.black.opacity(0.06), lineWidth: 1)
+        )
+        .shadow(color: Color.black.opacity(0.05), radius: 6, x: 0, y: 2)
     }
 }
