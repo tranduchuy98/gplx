@@ -1,0 +1,42 @@
+/* 
+  Localizable.strings
+  Fsocial
+
+  Created by Huy Tran on 13/8/24.
+  
+*/
+
+"common.loading" = "Đang tải...";
+"common.exit" = "Thoát";
+"common.cancel" = "Huỷ bỏ";
+"common.setting" = "Cấu hình";
+"common.pendent" = "Chưa hoàn thành";
+"common.completed" = "Đã hoàn thành";
+"common.expired" = "Đã hết hạn";
+"common.done" = "Xong";
+"common.filter" = "Lọc";
+"common.confirm" = "Xác nhận";
+"common.welcome_format" = "Xin chào%@";
+"common.no_data" = "Chưa có dữ liệu";
+"common.search_placeholder" = "Tìm kiếm";
+"common.success" = "Thành công";
+"common.failure" = "Thất bại";
+"common.message_error" = "Đã có lỗi xảy ra. Vui lòng thử lại!";
+"common.search_placeholder" = "Tìm kiếm";
+"common.close" = "Đóng";
+"common.note" = "Lưu ý";
+"common.have.filter" = "Đã lọc";
+"common.copy.success" = "Sao chép thành công";
+"common.data.emtry" = "Không có dữ liệu";
+"common.explain.title.show" = "Giải thích";
+"common.explain.title.hide" = "Ẩn giải thích";
+"common.not_update" = "Chưa cập nhật";
+
+
+// MARK: Tabbar
+
+"tabbar.news" = "Tin tức";
+"tabbar.message" = "Tin nhắn";
+"tabbar.wallet" = "Ví bảo mật";
+"tabbar.more" = "Thêm";
+
